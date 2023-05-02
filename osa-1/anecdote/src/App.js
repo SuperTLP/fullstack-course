@@ -2,8 +2,10 @@ import { useState } from 'react'
 import Anecdote from './components/anecdote'
 import Button from './components/button'
 import MostVoted from './components/mostVoted'
+import showCoordinatesOnMapEmbeddedFromDegrees from './components/mapicon'
 
 const App = () => {
+
   const anecdotes = [
     'If it hurts, do it more often.',
     'Adding manpower to a late software project makes it later!',
@@ -29,6 +31,7 @@ const App = () => {
   return (
     <div>
       <h1>Anecdote of the day</h1>
+      <showCoordinatesOnMapEmbeddedFromDegrees lat={"60,62852"} long={"25,31491"}></showCoordinatesOnMapEmbeddedFromDegrees>
       <Anecdote anecdote={anecdotes[selected]} votes={points[selected]}></Anecdote>
       <Button name={"next"} setter={()=>{setSelected(Math.floor(Math.random()*anecdotes.length))}}></Button>
       <Button name={"vote"} setter={handlePointChange}></Button>

@@ -1,0 +1,19 @@
+.notification {
+    box-sizing: border-box;
+    background-color: lightgrey;
+    font-size: 20px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.green-notification {
+    color: green;
+}
+.red-notification {
+    color:red;
+}
+.placeholder {
+
+}

@@ -1,5 +1,5 @@
 import axios from 'axios'
-let baseUrl="https://puhelinluettelo-server.fly.dev/api/persons"
+let baseUrl="/api/persons"
 
 function addPerson(person) {
     return axios.post(baseUrl, person)

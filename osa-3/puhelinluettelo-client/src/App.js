@@ -48,10 +48,15 @@ const App = () => {
     personService.addPerson({"name": newName, "number": newNumber})
     .then(res => {
       newPersons.push({"name": newName, "number": newNumber, "id": res["data"].id})
+      if (res.status===400) {
+        console.log(res)
+      }
+      setPersons(newPersons)
+      setMessage({message: `Added ${newName}`, type:"green-notification"})
     })
-
-    setPersons(newPersons)
-    setMessage({message: `Added ${newName}`, type:"green-notification"})
+    .catch(err => {
+      setMessage({message: err.response.data.error, type:"red-notification"})
+    })
   }
 
   let inputs = [

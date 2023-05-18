@@ -103,8 +103,6 @@ app.get("/info", (req, res, next) => {
     }).catch(error => next(error))
 }, errorHandler)
 
-let PORT=8080
-
-app.listen(PORT, () => {
+app.listen(process.env.PORT, () => {
     console.log("server started")
 })

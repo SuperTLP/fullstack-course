@@ -7,11 +7,13 @@ const api = supertest(app)
 
 const initialBlogs = [
     {
+        "author": "ekan testin kirjoittja",
         "title": "eka testi",
         "url": "https://www.youtube.com",
 
     },
     {
+        "author": "toisen testin kirjoittaja",
         "title": "toka testi",
         "url": "https://test.com",
     }
@@ -33,7 +35,7 @@ const initialUsers=[
 let newBlog = 
 {
     "title": "uusi blogi",
-    "author": "tauno testaaja",
+    "author": "uuden blogin kirjoittaja",
     "url": "https://uusitesti.com",
     "likes": 10
 }
@@ -81,20 +83,21 @@ test("a blog added with no title returns 400 bad request", async ()=>{
     .expect(400)
 })
 
-// test("a blog added with no author returns 400 bad request", async ()=>{
-//     let invalidBlog = {...newBlog}
-//     delete invalidBlog["author"]
-//     await api.post("/api/blogs").send(invalidBlog)
-//     .expect(400)
-// })
-//this is useless in new version.
+test("a blog added with no author returns 400 bad request", async ()=>{
+    let invalidBlog = {...newBlog}
+    delete invalidBlog["author"]
+
+    let loginResponse = await api.post("/api/login").send(initialUsers[0])
+    let token = loginResponse.body["token"].replace("Bearer ", "")
+
+    await api.post("/api/blogs").send(invalidBlog).set("Authorization", token)
+    .expect(400)
+})
 
 test("blog can be deleted", async () => {
     let loginResponse = await api.post("/api/login").send(initialUsers[0])
     let token = loginResponse.body["token"].replace("Bearer ", "")
     let response = await api.get("/api/blogs")
-
-    await api.post("/api/blogs")
 
     await api.delete(`/api/blogs/${response.body[0].id}`).set("Authorization", token)
     let new_response = await api.get("/api/blogs")
@@ -126,7 +129,7 @@ beforeEach(async () => {
     await api.post("/api/blogs").send(initialBlogs[0]).set("Authorization", first_token)
 
     let second_token = (await api.post("/api/login").send(initialUsers[1])).body.token
-    await api.post("/api/blogs").send(initialBlogs[0]).set("Authorization", second_token)
+    await api.post("/api/blogs").send(initialBlogs[1]).set("Authorization", second_token)
     
 
 })

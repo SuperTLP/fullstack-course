@@ -7,7 +7,7 @@ const User = require("../models/user")
 
 
 blogsRouter.get('/', async (request, response, next) => {
-    let blogs = await Blog.find({})
+    let blogs = await Blog.find({}).populate('user', { username: 1,name:1, id:1 })
     .catch(err => next(err))
   return response.json(blogs)
   }, errorHandler)
@@ -18,16 +18,17 @@ blogsRouter.post('/', async (request, response, next) => {
         {"error": "you need to be logged in in order to create blogs"})
     }
     let user = request.user
-    const blog = new Blog(
-      {"author": user.id, 
-      "title": request.body.title,
-      "url": request.body.url,
-      "likes":0
-    })
+    let new_blog = {...request.body}
+
+    new_blog["user"]=request.user.id
+    new_blog["likes"]=0
+
+    const blog = new Blog(new_blog)
 
     const result = await blog.save()
     .catch(err => next(err))
     let author = await User.findById(user.id)
+    console.log(author)
     author.blogs=author.blogs.concat(blog._id)
     await author.save()
     .catch(err => next(err))
@@ -46,12 +47,11 @@ blogsRouter.delete('/:id', async (request, response, next) => {
   if (blog===null) {
     return response.status(404).json({"error": "specified blog does not exist"})
   }
-
   let user = request.user
   if (user===null) {
     return response.status(401).json({"error": "you need to be logged in to delete posts."})
   }
-  if (blog.author===user.id) {
+  if (blog.user.toString()===user.id) {
     await Blog.findByIdAndDelete(blog.id)
     .catch(err => next(err))
     return response.status(200).end()
